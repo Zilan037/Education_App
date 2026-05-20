@@ -1,5 +1,7 @@
-import 'package:education_app/features/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:education_app/features/login_screen.dart';
+import 'package:education_app/features/register_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -11,7 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+
+      initialRoute: '/register',
+
+      routes: {
+        '/register': (context) => const RegisterScreen(),
+        '/': (context) => LoginScreen(),
+      },
     );
   }
 }
