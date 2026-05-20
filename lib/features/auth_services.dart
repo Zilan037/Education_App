@@ -5,12 +5,10 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<User?> register(
-      String name,
+  Future<User?> register(String name,
       String email,
       String password,
-      String role,
-      ) async {
+      String role,) async {
     try {
       final result = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -34,4 +32,19 @@ class AuthService {
       throw Exception("Registration failed");
     }
   }
+  Future<User?> login(String email, String password) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      return result.user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message);
+    } catch (e) {
+      throw Exception("Login failed");
+    }
+  }
 }
+
