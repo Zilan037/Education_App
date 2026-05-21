@@ -42,7 +42,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null) {
         AppSnackBar.show(context, "Login successful");
 
-        // TEMP: replace with your home screen later
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -111,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   const SizedBox(height: 30),
 
                   _card(),
@@ -178,6 +178,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 isLoading: isLoading,
                 onPressed: login,
               ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/forgot-password',
+                    );
+                  },
+                  child: const Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 15),
 
@@ -200,5 +218,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
