@@ -1,5 +1,8 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../core/constants/app_color.dart';
 import '../core/widgets/app_button.dart';
 import '../core/widgets/app_text_field.dart';
@@ -21,6 +24,7 @@ class _ForgotPasswordScreenState
   bool isLoading = false;
 
   void resetPassword() async {
+
     if (emailController.text.isEmpty) {
       AppSnackBar.show(context, "Enter your email");
       return;
@@ -28,20 +32,37 @@ class _ForgotPasswordScreenState
 
     setState(() => isLoading = true);
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
 
-    if (!mounted) return;
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text.trim(),
+      );
 
-    setState(() => isLoading = false);
+      if (!mounted) return;
 
-    AppSnackBar.show(
-      context,
-      "Reset link sent to email",
-    );
+      AppSnackBar.show(
+        context,
+        "Password reset email sent",
+      );
+
+    } catch (e) {
+
+      AppSnackBar.show(
+        context,
+        "Failed to send reset email",
+      );
+
+    } finally {
+
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
