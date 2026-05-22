@@ -1,3 +1,4 @@
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:education_app/core/widgets/app_button.dart';
@@ -55,9 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       if (user != null) {
-
         AppSnackBar.show(context, "Account created successfully");
-
         Navigator.pop(context);
       } else {
         AppSnackBar.show(context, "Registration failed");
@@ -126,13 +125,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(color: Colors.white.withOpacity(0.25)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.20),
-                blurRadius: 25,
-                offset: const Offset(0, 12),
-              ),
-            ],
           ),
           child: Column(
             children: [
@@ -213,6 +205,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
 
               const SizedBox(height: 20),
+
+              GestureDetector(
+                onTap: () async {
+                  final auth = AuthService();
+
+                  final user = await auth.signInWithGoogle();
+
+                  if (user != null && mounted) {
+                    AppSnackBar.show(context, "Google Sign In Successful");
+                    Navigator.pop(context);
+                  }
+                },
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/google_g.png",
+                          height: 18,
+                          width: 18,
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Continue with Google",
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
 
               AppButton(
                 text: "Create Account",

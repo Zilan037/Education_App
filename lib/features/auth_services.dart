@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,6 +19,7 @@ class AuthService {
       );
 
       final user = result.user;
+
       if (user == null) return null;
 
       await _db.collection("users").doc(user.uid).set({
@@ -32,6 +34,64 @@ class AuthService {
       throw Exception(e.message ?? "Auth error");
     } catch (e) {
       throw Exception("Registration failed");
+    }
+  }
+
+  Future<User?> login(
+      String email,
+      String password,
+      ) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      return result.user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? "Login failed");
+    } catch (e) {
+      throw Exception("Login failed");
+    }
+  }
+
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser =
+      await GoogleSignIn().signIn();
+
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+      await _auth.signInWithCredential(credential);
+
+      final user = userCredential.user;
+
+      if (user != null) {
+        final doc =
+        await _db.collection("users").doc(user.uid).get();
+
+        if (!doc.exists) {
+          await _db.collection("users").doc(user.uid).set({
+            "name": user.displayName ?? "",
+            "email": user.email ?? "",
+            "role": "student",
+            "createdAt": FieldValue.serverTimestamp(),
+          });
+        }
+      }
+
+      return user;
+    } catch (e) {
+      throw Exception("Google sign in failed");
     }
   }
 }
