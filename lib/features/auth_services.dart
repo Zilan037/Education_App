@@ -1,14 +1,41 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 class AuthService {
-  Future<bool> login({
-    required String username,
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // LOGIN
+
+  Future<UserCredential> login({
+    required String email,
     required String password,
   }) async {
-    await Future.delayed(const Duration(seconds: 2));
+    return await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
 
-    if (username == "admin" && password == "1234") {
-      return true;
-    }
+  // REGISTER
 
-    return false;
+  Future<UserCredential> register({
+    required String email,
+    required String password,
+  }) async {
+    return await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  // LOGOUT
+
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  // CURRENT USER
+
+  User? getCurrentUser() {
+    return _auth.currentUser;
   }
 }
