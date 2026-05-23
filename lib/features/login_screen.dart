@@ -1,53 +1,50 @@
+import 'package:education_app/features/register_screen.dart';
 import 'package:flutter/material.dart';
-import '../auth/services.dart';
+import '../auth/bloc.dart';
 import '../profile/profile_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final VoidCallback toggleTheme;
+
+  const LoginScreen({super.key, required this.toggleTheme});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
 
-  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-
-  bool isLoading = false;
 
   final AuthService authService = AuthService();
 
-  Future login() async {
+  bool isLoading = false;
 
+  // LOGIN
+
+  Future<void> login() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-
-      final data = await authService.login(
-        usernameController.text,
-        passwordController.text,
+      await authService.login(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        username: '',
       );
 
-      print(data);
+      if (!mounted) return;
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const ProfileScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => ProfileScreen()),
       );
-
-    } catch (e) {
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login Failed'),
-        ),
-      );
-
+    } catch (error) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
 
     setState(() {
@@ -57,42 +54,65 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: Text("Login"),
+
+        actions: [
+          IconButton(
+            onPressed: widget.toggleTheme,
+            icon: Icon(Icons.dark_mode),
+          ),
+        ],
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(20),
-
+        padding: EdgeInsets.all(20),
         child: Column(
           children: [
-
             TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                labelText: "Username",
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Password",
+                border: OutlineInputBorder(),
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 55,
 
-            ElevatedButton(
-              onPressed: login,
-              child: isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text("Login"),
+              child: ElevatedButton(
+                onPressed: isLoading ? null : login,
+
+                child: isLoading ? CircularProgressIndicator() : Text("Login"),
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+
+                  MaterialPageRoute(builder: (_) => RegisterScreen()),
+                );
+              },
+
+              child: Text("Create Account"),
             ),
           ],
         ),
