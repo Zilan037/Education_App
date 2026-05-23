@@ -207,9 +207,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   "No account? Create one",
                   style: TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w500,
+                     fontWeight: FontWeight.w500,
                   ),
-                ),
+                 ),
               ),
             ],
           ),
