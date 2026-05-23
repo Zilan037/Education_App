@@ -15,7 +15,7 @@ void main() async {
 
   await SharedPreferencesHelper.init();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
