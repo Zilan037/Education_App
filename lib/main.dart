@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'core/constants/theme_app.dart';
 import 'core/helpers/shared_preferences_helper.dart';
 import 'features/login_screen.dart';
 import 'firebase_options.dart';
@@ -59,11 +60,12 @@ class _MyAppState extends State<MyApp> {
 
       debugShowCheckedModeBanner: false,
 
-      theme:
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode:
       isDark
-          ? ThemeData.dark()
-          : ThemeData.light(),
-
+          ? ThemeMode.dark
+          : ThemeMode.light,
       home: LoginScreen(
         toggleTheme: toggleTheme,
       ),

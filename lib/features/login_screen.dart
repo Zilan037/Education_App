@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import '../profile/profile_screen.dart';
 import 'package:education_app/features/auth_services.dart';
+import '../profile/profile_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required Null Function() toggleTheme});
+  final VoidCallback toggleTheme;
+
+  const LoginScreen({
+    super.key,
+    required this.toggleTheme,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -14,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   bool isLoading = false;
+
   final AuthService authService = AuthService();
 
   Future<void> login() async {
@@ -22,8 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // حل نهایی: با تبدیل متد به Dynamic، فلاتر در زمان کامپایل ارور بررسی پارامتر نمی‌گیرد
-      // و کد شما بدون هیچ مشکلی مستقیماً اجرا خواهد شد.
       final dynamic auth = authService;
 
       final data = await auth.login(
@@ -43,9 +47,12 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Login Failed: ${e.toString()}'),
+          content: Text(
+            'Login Failed: ${e.toString()}',
+          ),
         ),
       );
     }
@@ -57,40 +64,174 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: Text(
+          "Login",
+          style: theme.textTheme.titleLarge,
+        ),
+        actions: [
+          IconButton(
+            onPressed: widget.toggleTheme,
+            icon: const Icon(Icons.dark_mode_rounded),
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-              ),
+
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Text(
+                  "Welcome Back ",
+                  style: theme.textTheme.headlineMedium,
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  "Login to continue your learning journey.",
+                  style: theme.textTheme.bodyMedium,
+                ),
+
+                const SizedBox(height: 40),
+
+                Text(
+                  "Email",
+                  style: theme.textTheme.titleMedium,
+                ),
+
+                const SizedBox(height: 12),
+
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  style: theme.textTheme.bodyLarge,
+                  decoration: const InputDecoration(
+                    hintText: "Enter your email",
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Text(
+                  "Password",
+                  style: theme.textTheme.titleMedium,
+                ),
+
+                const SizedBox(height: 12),
+
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  style: theme.textTheme.bodyLarge,
+                  decoration: const InputDecoration(
+                    hintText: "Enter your password",
+                    prefixIcon: Icon(Icons.lock_outline),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text("Forgot Password?"),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed:
+                    isLoading
+                        ? null
+                        : login,
+                    child:
+                    isLoading
+                        ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    )
+                        : const Text("Login"),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Divider(),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      child: Text(
+                        "OR",
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+
+                    const Expanded(
+                      child: Divider(),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.g_mobiledata),
+                    label: const Text("Continue with Google"),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don’t have an account? ",
+                      style: theme.textTheme.bodyMedium,
+                    ),
+
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text("Register"),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : login,
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Login"),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
