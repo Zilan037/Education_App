@@ -18,6 +18,7 @@ class SharedPreferencesHelper {
   }
 
   // BOOL
+
   static Future<bool> setBool(String key, bool value) {
     return _sharedPreferences!.setBool(key, value);
   }
