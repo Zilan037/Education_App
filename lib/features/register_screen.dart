@@ -1,16 +1,12 @@
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:education_app/core/widgets/app_button.dart';
-import 'package:education_app/core/widgets/app_text_field.dart';
 import 'package:education_app/core/widgets/app_snackbar.dart';
 import 'package:education_app/core/constants/app_strings.dart';
 import 'package:education_app/features/auth_services.dart';
-
-import '../core/constants/app_color.dart';
+import 'package:education_app/core/constants/theme.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key, required void Function() Theme});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -70,210 +66,169 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.secondary],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const Text(
-                    "Create Account ✨",
-                    style: TextStyle(
-                      fontSize: 26,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  _card(),
-                ],
-              ),
-            ),
-          ),
+      appBar: AppBar(
+        title: Text(
+          "Register",
+          style: theme.textTheme.titleLarge,
         ),
       ),
-    );
-  }
 
-  Widget _card() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withOpacity(0.22),
-                Colors.white.withOpacity(0.10),
-                Colors.white.withOpacity(0.05),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: Colors.white.withOpacity(0.25)),
-          ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppTextField(
+
+              Text(
+                "Create Account",
+                style: theme.textTheme.headlineMedium,
+              ),
+
+              const SizedBox(height: 10),
+
+              Text(
+                "Join your learning journey",
+                style: theme.textTheme.bodyMedium,
+              ),
+
+              const SizedBox(height: 40),
+
+              TextField(
                 controller: nameController,
-                hint: "Full Name",
-                icon: Icons.person,
-                textColor: Colors.white,
-              ),
-
-              const SizedBox(height: 12),
-
-              AppTextField(
-                controller: emailController,
-                hint: "Email",
-                icon: Icons.email,
-                textColor: Colors.white,
-              ),
-
-              const SizedBox(height: 12),
-
-              AppTextField(
-                controller: passwordController,
-                hint: "Password",
-                icon: Icons.lock,
-                obscure: obscurePass,
-                textColor: Colors.white,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscurePass ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    setState(() => obscurePass = !obscurePass);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              AppTextField(
-                controller: confirmController,
-                hint: "Confirm Password",
-                icon: Icons.lock_outline,
-                obscure: obscureConfirm,
-                textColor: Colors.white,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscureConfirm ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    setState(() => obscureConfirm = !obscureConfirm);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              DropdownButtonFormField(
-                value: role,
-                dropdownColor: Colors.black87,
-                style: const TextStyle(color: Colors.white),
-                items: const [
-                  DropdownMenuItem(value: "student", child: Text("Student")),
-                  DropdownMenuItem(value: "teacher", child: Text("Teacher")),
-                  DropdownMenuItem(value: "academy", child: Text("Academy")),
-                ],
-                onChanged: (v) {
-                  if (v != null) {
-                    setState(() => role = v);
-                  }
-                },
                 decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.school, color: Colors.white),
-                  border: OutlineInputBorder(),
+                  hintText: "Full name",
+                  prefixIcon: Icon(Icons.person_outline),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              GestureDetector(
-                onTap: () async {
-                  final auth = AuthService();
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+              ),
 
-                  final user = await auth.signInWithGoogle();
+              const SizedBox(height: 20),
 
-                  if (user != null && mounted) {
-                    AppSnackBar.show(context, "Google Sign In Successful");
-                    Navigator.pop(context);
-                  }
-                },
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
+              TextField(
+                controller: passwordController,
+                obscureText: obscurePass,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePass
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          "assets/images/google_g.png",
-                          height: 18,
-                          width: 18,
-                        ),
-                        const SizedBox(width: 10),
-                        const Text(
-                          "Continue with Google",
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
+                    onPressed: () {
+                      setState(() {
+                        obscurePass = !obscurePass;
+                      });
+                    },
                   ),
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
 
-              AppButton(
-                text: "Create Account",
-                isLoading: isLoading,
-                onPressed: register,
+              TextField(
+                controller: confirmController,
+                obscureText: obscureConfirm,
+                decoration: InputDecoration(
+                  hintText: "Confirm password",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscureConfirm
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        obscureConfirm = !obscureConfirm;
+                      });
+                    },
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Already have an account? Login",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
+              DropdownButtonFormField<String>(
+                value: role,
+                items: const [
+                  DropdownMenuItem(
+                    value: "student",
+                    child: Text("Student"),
                   ),
+                  DropdownMenuItem(
+                    value: "teacher",
+                    child: Text("Teacher"),
+                  ),
+                  DropdownMenuItem(
+                    value: "academy",
+                    child: Text("Academy"),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => role = value);
+                  }
+                },
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.school_outlined),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: isLoading ? null : register,
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                      : const Text("Create Account"),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final auth = AuthService();
+                    final user = await auth.signInWithGoogle();
+
+                    if (user != null && mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  icon: const Icon(Icons.g_mobiledata),
+                  label: const Text("Continue with Google"),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Center(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Already have an account? Login"),
                 ),
               ),
             ],
