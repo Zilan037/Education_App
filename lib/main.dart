@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:education_app/features/login_screen.dart';
-import 'package:education_app/features/register_screen.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:education_app/core/constants/theme.dart';
+import 'features/login_screen.dart';
 import 'features/forgot_password.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -13,16 +19,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      initialRoute: '/register',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.light,
+
+      initialRoute: '/login',
 
       routes: {
-        '/register': (context) => const RegisterScreen(),
-        '/': (context) => LoginScreen(),
-        '/forgot-password': (context) => const ForgotPasswordScreen(),
-
+        '/login': (_) => LoginScreen(toggleTheme: () {}),
+        '/forgot-password': (_) => const ForgotPasswordScreen(),
       },
     );
   }

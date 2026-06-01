@@ -1,14 +1,16 @@
-import 'dart:ui';
+import 'package:education_app/features/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:education_app/core/constants/app_color.dart';
-import '../core/constants/app_strings.dart';
-import '../core/widgets/app_button.dart';
-import '../core/widgets/app_text_field.dart';
-import '../core/widgets/app_snackbar.dart';
 import 'package:education_app/features/auth_services.dart';
+import '../profile/profile_screen.dart';
+import 'package:education_app/core/constants/theme.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final VoidCallback toggleTheme;
+
+  const LoginScreen({
+    super.key,
+    required this.toggleTheme,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -19,199 +21,228 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   bool isLoading = false;
-  bool obscure = true;
 
-  void login() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      AppSnackBar.show(context, AppStrings.fillFields);
-      return;
-    }
+  final AuthService authService = AuthService();
 
-    setState(() => isLoading = true);
+  Future<void> login() async {
+    setState(() {
+      isLoading = true;
+    });
 
     try {
-      final auth = AuthService();
+      final dynamic auth = authService;
 
-      final user = await auth.login(
+      final data = await auth.login(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
 
+      print(data);
+
       if (!mounted) return;
 
-      if (user != null) {
-        AppSnackBar.show(context, "Login successful");
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const Scaffold(
-              body: Center(
-                child: Text("Home Screen (coming soon)"),
-              ),
-            ),
-          ),
-        );
-      } else {
-        AppSnackBar.show(context, "Invalid login");
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ProfileScreen(),
+        ),
+      );
     } catch (e) {
-      AppSnackBar.show(context, "Login failed");
-    } finally {
-      if (mounted) setState(() => isLoading = false);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Login Failed: ${e.toString()}',
+          ),
+        ),
+      );
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primary,
-              AppColors.secondary,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+      appBar: AppBar(
+        title: Text(
+          "Login",
+          style: theme.textTheme.titleLarge,
         ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Container(
-                    height: 90,
-                    width: 90,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 15,
-                        ),
-                      ],
+        actions: [
+          IconButton(
+            onPressed: widget.toggleTheme,
+            icon: const Icon(Icons.dark_mode_rounded),
+          ),
+        ],
+      ),
+
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Text(
+                  "Welcome Back ",
+                  style: theme.textTheme.headlineMedium,
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  "Login to continue your learning journey.",
+                  style: theme.textTheme.bodyMedium,
+                ),
+
+                const SizedBox(height: 40),
+
+                Text(
+                  "Email",
+                  style: theme.textTheme.titleMedium,
+                ),
+
+                const SizedBox(height: 12),
+
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  style: theme.textTheme.bodyLarge,
+                  decoration: const InputDecoration(
+                    hintText: "Enter your email",
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Text(
+                  "Password",
+                  style: theme.textTheme.titleMedium,
+                ),
+
+                const SizedBox(height: 12),
+
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  style: theme.textTheme.bodyLarge,
+                  decoration: const InputDecoration(
+                    hintText: "Enter your password",
+                    prefixIcon: Icon(Icons.lock_outline),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/forgot-password');
+
+                    },
+                    child: const Text("Forgot Password?"),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed:
+                    isLoading
+                        ? null
+                        : login,
+                    child:
+                    isLoading
+                        ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    )
+                        : const Text("Login"),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Divider(),
                     ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        "assets/images/img.png",
-                        fit: BoxFit.cover,
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      child: Text(
+                        "OR",
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+
+                    const Expanded(
+                      child: Divider(),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.g_mobiledata),
+                    label: const Text("Continue with Google"),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
                   ),
+                ),
 
-                  const Text(
-                    "Welcome Back 👋",
-                    style: TextStyle(
-                      fontSize: 26,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                const SizedBox(height: 40),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don’t have an account? ",
+                      style: theme.textTheme.bodyMedium,
                     ),
-                  ),
 
-                  const SizedBox(height: 30),
-
-                  _card(),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _card() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withOpacity(0.22),
-                Colors.white.withOpacity(0.10),
-                Colors.white.withOpacity(0.05),
+                    TextButton(
+                      onPressed: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => const RegisterScreen(),
+                        //   ),
+                       // );
+                      },
+                      child: const Text("Register"),
+                    ),
+                  ],
+                ),
               ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: Colors.white.withOpacity(0.25)),
-          ),
-          child: Column(
-            children: [
-              AppTextField(
-                controller: emailController,
-                hint: "Email",
-                icon: Icons.email,
-                textColor: Colors.white,
-              ),
-
-              const SizedBox(height: 15),
-
-              AppTextField(
-                controller: passwordController,
-                hint: "Password",
-                icon: Icons.lock,
-                obscure: obscure,
-                textColor: Colors.white,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscure ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.white70,
-                  ),
-                  onPressed: () {
-                    setState(() => obscure = !obscure);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              AppButton(
-                text: "Login",
-                isLoading: isLoading,
-                onPressed: login,
-              ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/forgot-password',
-                    );
-                  },
-                  child: const Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/register');
-                },
-                child: const Text(
-                  "No account? Create one",
-                  style: TextStyle(
-                    color: Colors.white,
-                     fontWeight: FontWeight.w500,
-                  ),
-                 ),
-              ),
-            ],
           ),
         ),
       ),
