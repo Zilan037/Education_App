@@ -1,84 +1,175 @@
 import 'package:flutter/material.dart';
-import '../auth/api_service.dart';
-import '../auth/user_models.dart';
+import 'edit_profile_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
+
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  UserModel? user;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    loadUser();
-  }
-
-  Future<void> loadUser() async {
-    try {
-      final result = await ApiService.getUser();
-
-      setState(() {
-        user = result;
-        isLoading = false;
-      });
-    } catch (error) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
+  static const Color orange = Color(0xFFFF8A00);
+  static const Color lightBg = Color(0xFFFFF7F0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
+      backgroundColor: lightBg,
 
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : user == null
-          ? Center(child: Text("No User Found"))
-          : Padding(
-              padding: const EdgeInsets.all(24),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Profile",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
 
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
 
-                  CircleAvatar(radius: 60, child: Icon(Icons.person, size: 60)),
+              const SizedBox(height: 10),
 
-                  SizedBox(height: 20),
-
-                  Text(
-                    user!.name,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-
-                  SizedBox(height: 10),
-
-                  Text(user!.email),
-
-                  SizedBox(height: 30),
-
-                  _profileTile(
-                    icon: Icons.email,
-                    title: "Email",
-                    subtitle: user!.email,
-                  ),
-                  SizedBox(height: 20),
-                  _profileTile(
-                    icon: Icons.person,
-                    title: "Username",
-                    subtitle: user!.name,
-                  ),
-                ],
+              // Profile Image
+              Container(
+                height: 130,
+                width: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: orange.withOpacity(0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.person,
+                  size: 75,
+                  color: orange,
+                ),
               ),
-            ),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "Zeynab Nazari",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              const Text(
+                "Flutter Developer",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
+
+              const SizedBox(height: 35),
+
+              _profileTile(
+                icon: Icons.email_outlined,
+                title: "Email",
+                subtitle: "zeynab@gmail.com",
+              ),
+
+              const SizedBox(height: 18),
+
+              _profileTile(
+                icon: Icons.phone_outlined,
+                title: "Phone",
+                subtitle: "+971 000000000",
+              ),
+
+              const SizedBox(height: 18),
+
+              _profileTile(
+                icon: Icons.school_outlined,
+                title: "University",
+                subtitle: "University of Kabul",
+              ),
+
+              const SizedBox(height: 10),
+
+              _profileTile(
+                icon: Icons.bar_chart,
+                title: "My Progress",
+                subtitle: "View learning progress",
+              ),
+
+              const SizedBox(height: 18),
+
+              _profileTile(
+                icon: Icons.favorite_outline,
+                title: "Favorites",
+                subtitle: "Favorite courses",
+              ),
+
+              const SizedBox(height: 18),
+
+              _profileTile(
+                icon: Icons.settings_outlined,
+                title: "Settings",
+                subtitle: "App settings",
+              ),
+
+              const SizedBox(height: 18),
+
+              _profileTile(
+                icon: Icons.logout,
+                title: "Logout",
+                subtitle: "Sign out from account",
+              ),
+
+
+
+              const SizedBox(height: 35),
+
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: () {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfileScreen(),
+                        ),
+                      );
+                    },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: orange,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  child: const Text(
+                    "Edit Profile",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -88,23 +179,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String subtitle,
   }) {
     return Container(
-      padding: EdgeInsets.all(18),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(icon),
-          SizedBox(width: 15),
+
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: orange.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(
+              icon,
+              color: orange,
+            ),
+          ),
+
+          const SizedBox(width: 18),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(subtitle),
+
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+              ),
+
+              const SizedBox(height: 4),
+
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
-          ),
+          )
         ],
       ),
     );
