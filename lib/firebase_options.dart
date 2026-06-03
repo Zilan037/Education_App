@@ -23,15 +23,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
@@ -47,30 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD4mYHxTwm0HlMyJK5m-ltjhEqgj7qRvEw',
-    appId: '1:101684591299:web:143e59dcd4df3fc2a54076',
-    messagingSenderId: '101684591299',
-    projectId: 'eduaf-student-app-2026',
-    authDomain: 'eduaf-student-app-2026.firebaseapp.com',
-    storageBucket: 'eduaf-student-app-2026.firebasestorage.app',
-    measurementId: 'G-CX5LQRFPZE',
+    apiKey: 'AIzaSyBK7j5CxvmUw4GDAHQx6HZEtuuqfIQ9JMc',
+    appId: '1:214833614255:web:861250a32e6e4228e6335a',
+    messagingSenderId: '214833614255',
+    projectId: 'education-edc0e',
+    authDomain: 'education-edc0e.firebaseapp.com',
+    storageBucket: 'education-edc0e.firebasestorage.app',
+    measurementId: 'G-JM7VBKHCSN',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAhkFfAJBmgRJIKrNJKZjgacbWb8dEBuFU',
-    appId: '1:101684591299:android:1eaf03ad67328d5ea54076',
-    messagingSenderId: '101684591299',
-    projectId: 'eduaf-student-app-2026',
-    storageBucket: 'eduaf-student-app-2026.firebasestorage.app',
+    apiKey: 'AIzaSyAdBaQztshwdbXvAJ0TQO1W1LaFE7UgKhQ',
+    appId: '1:214833614255:android:75f28cefff7331d3e6335a',
+    messagingSenderId: '214833614255',
+    projectId: 'education-edc0e',
+    storageBucket: 'education-edc0e.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyC9C3SFPDtftIeZ1ZKAGZe4DfDGhNWssE0',
+    appId: '1:214833614255:ios:7af21b043545184fe6335a',
+    messagingSenderId: '214833614255',
+    projectId: 'education-edc0e',
+    storageBucket: 'education-edc0e.firebasestorage.app',
+    iosBundleId: 'com.example.educationApp',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyC9C3SFPDtftIeZ1ZKAGZe4DfDGhNWssE0',
+    appId: '1:214833614255:ios:7af21b043545184fe6335a',
+    messagingSenderId: '214833614255',
+    projectId: 'education-edc0e',
+    storageBucket: 'education-edc0e.firebasestorage.app',
+    iosBundleId: 'com.example.educationApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyD4mYHxTwm0HlMyJK5m-ltjhEqgj7qRvEw',
-    appId: '1:101684591299:web:2131ba3df3d674ada54076',
-    messagingSenderId: '101684591299',
-    projectId: 'eduaf-student-app-2026',
-    authDomain: 'eduaf-student-app-2026.firebaseapp.com',
-    storageBucket: 'eduaf-student-app-2026.firebasestorage.app',
-    measurementId: 'G-DVFT7W4PEG',
+    apiKey: 'AIzaSyBK7j5CxvmUw4GDAHQx6HZEtuuqfIQ9JMc',
+    appId: '1:214833614255:web:5f28c072fe877ff6e6335a',
+    messagingSenderId: '214833614255',
+    projectId: 'education-edc0e',
+    authDomain: 'education-edc0e.firebaseapp.com',
+    storageBucket: 'education-edc0e.firebasestorage.app',
+    measurementId: 'G-KXH8DHY6NR',
   );
 }

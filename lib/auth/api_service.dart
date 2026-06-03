@@ -1,41 +1,39 @@
 import 'package:dio/dio.dart';
+import 'package:education_app/auth/user_models.dart';
 
 class ApiService {
+  static get dio => null;
 
+  static Future<UserModel> getUser() async {
+    final response = await dio.get('users/1');
+    return UserModel.fromJson(response.data);
+  }
+
+  // DIO SERVICE
+  //  فقط اگر API خارجی نیاز شداین قسمت فعال می‌شود
+  /*
   static final Dio dio = Dio(
+
     BaseOptions(
+
       baseUrl: 'https://dummyjson.com/',
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
+
+      connectTimeout:
+          Duration(seconds: 10),
+
+      receiveTimeout:
+          Duration(seconds: 10),
     ),
   );
 
-  static Future<UserModel> getUser() async {
+  // GET USER
 
-    final response = await dio.get('users/1');
+  static Future getUser() async {
 
-    return UserModel.fromJson(response.data);
+    final response =
+        await dio.get('users/1');
+
+    return response.data;
   }
-}
-
-class UserModel {
-
-  final int id;
-  final String username;
-  final String email;
-
-  UserModel({
-    required this.id,
-    required this.username,
-    required this.email,
-  });
-
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-
-    return UserModel(
-      id: json['id'],
-      username: json['username'],
-      email: json['email'],
-    );
-  }
+  */
 }

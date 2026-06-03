@@ -145,10 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/forgot-password');
-
-                    },
+                    onPressed: () {},
                     child: const Text("Forgot Password?"),
                   ),
                 ),
@@ -229,14 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     TextButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (_) => const RegisterScreen(),
-                        //   ),
-                       // );
-                      },
+                      onPressed: () {},
                       child: const Text("Register"),
                     ),
                   ],
