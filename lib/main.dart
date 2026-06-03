@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'core/constants/theme_app.dart';
-import 'core/helpers/shared_preferences_helper.dart';
-import 'features/login_screen.dart';
-import 'firebase_options.dart';
-import 'wrapper.dart';
+import 'package:flutter/material.dart';  //
+import 'package:firebase_core/firebase_core.dart'; //
+import 'features/forgot_password.dart'; //
+import 'core/constants/theme_app.dart'; //
+import 'core/helpers/shared_preferences_helper.dart'; //
+import 'features/login_screen.dart';//
+import 'firebase_options.dart';  //
+import 'wrapper.dart'; //
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +16,6 @@ void main() async {
   );
 
   await SharedPreferencesHelper.init();
-
   runApp(const MyApp());
 }
 

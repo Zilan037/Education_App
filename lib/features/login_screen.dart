@@ -1,6 +1,8 @@
+import 'package:education_app/features/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:education_app/features/auth_services.dart';
 import '../profile/profile_screen.dart';
+import 'package:education_app/core/constants/theme.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
