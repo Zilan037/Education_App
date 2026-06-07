@@ -1,3 +1,7 @@
+
+
+import 'package:education_app/features/register_screen.dart';
+import 'core/constants/theme.dart';
 import 'package:flutter/material.dart';  //
 import 'package:firebase_core/firebase_core.dart'; //
 import 'features/forgot_password.dart'; //
