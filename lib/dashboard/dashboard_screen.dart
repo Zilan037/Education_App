@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../features/login_screen.dart';
 import 'dashboard_services.dart';
-
+import '../profile/profile_screen.dart';
+import '../courses/lesson_screen.dart';
+import '../quiz/quiz_screen.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -14,6 +18,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int courses = 0;
   int assignments = 0;
   int messages = 0;
+  int quiz = 0;
 
   bool isLoading = true;
 
@@ -27,11 +32,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> loadData() async {
-    final c = await service.getCoursesCount();
-    final a = await service.getAssignmentsCount();
-    final m = await service.getMessagesCount();
-    final user = await service.getUserInfo();
-
+    final userId = "userId123";
+    // یا از FirebaseAuth
+    final c = await service.getCoursesCount(userId);
+    final a = await service.getAssignmentsCount(userId);
+    final m = await service.getMessagesCount(userId);
+    final user = await service.getUserInfo(userId);
     setState(() {
       courses = c;
       assignments = a;
@@ -52,48 +58,70 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Welcome $name 👋",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+
+            Text("Role: $role", style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 30),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 15,
+                crossAxisSpacing: 15,
                 children: [
-                  Text(
-                    "Welcome $name 👋",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  _card(
+                    title: "Courses",
+                    value: courses.toString(),
+                    icon: Icons.school,onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const CourseScreen()),);
+                  }
+                  ),
+                  _card(
+                      title: "Quiz",
+                      value: courses.toString(),
+                      icon: Icons.question_mark,onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const QuizScreen()),);
+                  }
+                  ),
+                  _card(
+                      title: "Login",
+                      value: courses.toString(),
+                      icon: Icons.start,onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) =>  LoginScreen(toggleTheme: () {},)),);
+                  }
+                  ),
+                  _card(
+                    title: "Assignments",
+                    value: assignments.toString(),
+                    icon: Icons.assignment,
                   ),
 
-                  Text("Role: $role", style: TextStyle(color: Colors.grey)),
-                  SizedBox(height: 30),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 15,
-                      children: [
-                        _card(
-                          title: "Courses",
-                          value: courses.toString(),
-                          icon: Icons.school,
-                        ),
-
-                        _card(
-                          title: "Assignments",
-                          value: assignments.toString(),
-                          icon: Icons.assignment,
-                        ),
-
-                        _card(
-                          title: "Messages",
-                          value: messages.toString(),
-                          icon: Icons.message,
-                        ),
-
-                        _card(title: "Profile", value: "", icon: Icons.person),
-                      ],
-                    ),
+                  _card(
+                    title: "Messages",
+                    value: messages.toString(),
+                    icon: Icons.message,
                   ),
+                  _card(title: "Profile", value: "", icon: Icons.person,
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(),),);
+                      }),
+
                 ],
               ),
             ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -101,25 +129,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String title,
     required String value,
     required IconData icon,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black12)],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: Colors.orange),
-          SizedBox(height: 10),
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 5),
-          Text(
-            value,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.black12,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: Colors.orange),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
