@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
         'register_screen': (context) => RegisterScreen(Theme: () {  },),
         'dashboard_screen': (context) => DashboardScreen(),
       },
-      initialRoute: 'dashboard_screen',
+      initialRoute: 'register_screen',
     );
   }
 }
