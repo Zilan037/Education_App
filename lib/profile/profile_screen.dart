@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'edit_profile_screen.dart';
-
+import 'settings_screen.dart';
+import 'progress_screen.dart';
+import 'favorites_screen.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -63,30 +65,79 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 25),
 
 
-            const Divider(),
-            const ListTile(
-              leading: Icon(Icons.bar_chart),
-              title: Text("My Progress"),
+            ListTile(
+              leading: const Icon(Icons.bar_chart),
+              title: const Text("My Progress"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProgressScreen(),
+                  ),
+                );
+              },
             ),
 
             const Divider(),
 
-            const ListTile(
-              leading: Icon(Icons.favorite),
-              title: Text("Favorites"),
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text("Favorites"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FavoritesScreen(),
+                  ),
+                );
+              },
             ),
+
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                );
+              },
+            ),
+
             const Divider(),
 
-            const ListTile(
-              leading: Icon(Icons.settings),
-              title: Text("Settings"),
-            ),
-
-            const Divider(),
-
-            const ListTile(
-              leading: Icon(Icons.logout),
-              title: Text("Logout"),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Logout"),
+                      content: const Text(
+                        "Are you sure you want to logout?",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Logout"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
 
             const Divider(),
