@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:education_app/core/widgets/app_snackbar.dart';
 import 'package:education_app/core/constants/app_strings.dart';
 import 'package:education_app/features/auth_services.dart';
-import 'package:education_app/core/constants/theme.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key, required void Function() Theme});
@@ -164,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 20),
 
               DropdownButtonFormField<String>(
-                value: role,
+                initialValue: role,
                 items: const [
                   DropdownMenuItem(
                     value: "student",

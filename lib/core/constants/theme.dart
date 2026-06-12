@@ -123,7 +123,7 @@ class AppTheme {
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.all(AppColors.primary),
       trackColor: WidgetStateProperty.all(
-        AppColors.primary.withOpacity(0.3),
+        AppColors.primary.withValues(alpha: 0.3),
       ),
     ),
     iconTheme: const IconThemeData(

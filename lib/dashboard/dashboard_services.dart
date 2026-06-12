@@ -1,53 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class DashboardService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // تعداد کورس‌های کاربر
+  // گرفتن تعداد کورس‌ها (فعلاً dummy)
   Future<int> getCoursesCount(String userId) async {
-    final snapshot = await _db
-        .collection('courses')
-        .where('students', arrayContains: userId)
-        .get();
-
-    return snapshot.docs.length;
+    await Future.delayed(const Duration(seconds: 1));
+    return 12;
   }
 
-  // تعداد assignment های کاربر
+  // گرفتن تعداد assignment ها
   Future<int> getAssignmentsCount(String userId) async {
-    final snapshot = await _db
-        .collection('assignments')
-        .where('userId', isEqualTo: userId)
-        .get();
-
-    return snapshot.docs.length;
+    await Future.delayed(const Duration(seconds: 1));
+    return 5;
   }
 
-  // تعداد quiz های کاربر
-  Future<int> getQuizCount(String userId) async {
-    final snapshot = await _db
-        .collection('quizzes')
-        .where('userId', isEqualTo: userId)
-        .get();
-
-    return snapshot.docs.length;
-  }
-
-  // پیام‌ها (مثلاً inbox)
+  // گرفتن پیام‌ها
   Future<int> getMessagesCount(String userId) async {
-    final snapshot = await _db
-        .collection('messages')
-        .where('receiverId', isEqualTo: userId)
-        .where('read', isEqualTo: false)
-        .get();
-
-    return snapshot.docs.length;
+    await Future.delayed(const Duration(seconds: 1));
+    return 3;
   }
 
-  // اطلاعات کاربر
+  // اطلاعات کاربر (بعداً Firebase می‌شود)
   Future<Map<String, dynamic>> getUserInfo(String userId) async {
-    final doc = await _db.collection('users').doc(userId).get();
+    await Future.delayed(const Duration(seconds: 1));
 
-    return doc.data() ?? {};
+    return {
+      "name": "Sakina",
+      "role": "Student",
+    };
   }
 }

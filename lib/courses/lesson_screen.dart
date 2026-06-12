@@ -85,7 +85,7 @@ class _CourseScreenState extends State<CourseScreen> {
 class LessonScreen extends StatefulWidget {
   final  course;
 
-  LessonScreen({super.key, required this.course});
+  const LessonScreen({super.key, required this.course});
 
   @override
   State<LessonScreen> createState() => _LessonScreenState();
