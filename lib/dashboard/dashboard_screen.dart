@@ -1,5 +1,7 @@
+import 'package:education_app/quiz/quiz_model.dart';
 import 'package:flutter/material.dart';
 import '../features/login_screen.dart';
+import '../quiz/question_model.dart';
 import 'dashboard_services.dart';
 import '../profile/profile_screen.dart';
 import '../courses/lesson_screen.dart';
@@ -85,10 +87,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   _card(
                       title: "Quiz",
-                      value: courses.toString(),
+                      value: quiz.toString(),
                       icon: Icons.question_mark,onTap: () {
                     Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => const QuizScreen()),);
+                        builder: (context) => QuizScreen(exam: ExamModel(id: '', title: '', subject: '', questions: []),)),);
                   }
                   ),
                   _card(
