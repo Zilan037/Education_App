@@ -6,48 +6,78 @@ import 'favorites_screen.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  static const Color orange = Color(0xFFFF8A00);
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
+class _ProfileScreenState extends State<ProfileScreen> {
+  UserModel? user;
+  bool isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
 
+  Future<void> loadUser() async {
+    try {
+      final result = await ApiService.getUser();
+
+      setState(() {
+        user = result;
+        isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile"),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Icon(
-              Icons.person,
-              size: 100,
-              color: orange,
-            ),
+      appBar: AppBar(title: Text("Profile")),
 
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : user == null
+          ? Center(child: Text("No User Found"))
+          : Padding(
+              padding: const EdgeInsets.all(24),
 
-            const SizedBox(height: 20),
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
 
-            const Text(
-              "Zeynab Nazarii",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+                  CircleAvatar(radius: 60, child: Icon(Icons.person, size: 60)),
 
-            const SizedBox(height: 8),
+                  SizedBox(height: 20),
 
-            const Text(
+                  Text(
+                    user!.name,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
 
-              "Flutter Developer",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
+                  SizedBox(height: 10),
+
+                  Text(user!.email),
+
+                  SizedBox(height: 30),
+
+                  _profileTile(
+                    icon: Icons.email,
+                    title: "Email",
+                    subtitle: user!.email,
+                  ),
+                  SizedBox(height: 20),
+                  _profileTile(
+                    icon: Icons.person,
+                    title: "Username",
+                    subtitle: user!.name,
+                  ),
+                ],
               ),
             ),
 
@@ -165,17 +195,31 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-
-  static Widget _infoRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, color: orange),
-        const SizedBox(width: 15),
-        Text(
-          text,
-          style: const TextStyle(fontSize: 16),
-        ),
-      ],
+  static Widget _profileTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+      ),
+      child: Row(
+        children: [
+          Icon(icon),
+          SizedBox(width: 15),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(subtitle),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

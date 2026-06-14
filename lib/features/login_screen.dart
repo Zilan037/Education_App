@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:education_app/features/auth_services.dart';
-import '../profile/profile_screen.dart';
+import 'package:education_app/teacher/screens/teacher_dashboard_screen_premium.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -31,8 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
       final dynamic auth = authService;
 
       final data = await auth.login(
-        emailController.text.trim(),
-        passwordController.text.trim(),
+        username: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
 
       print(data);
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const ProfileScreen(),
+          builder: (_) => const TeacherDashboardScreenPremium(),
         ),
       );
     } catch (e) {
