@@ -1,4 +1,6 @@
 import 'package:education_app/courses/course_screen.dart';
+import 'package:education_app/quiz/quiz_model.dart';
+import 'package:education_app/quiz/quiz_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +38,7 @@ void main() async {
           create: (_) => ThemeProvider()..loadTheme(),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
@@ -51,22 +53,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-
-      themeMode:
-          themeProvider.isDark
-              ? ThemeMode.dark
-              : ThemeMode.light,
-
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode:themeProvider.themeMode,
       routes: {
         WelcomeScreen.id: (context) => WelcomeScreen(),
         LoginScreen.id: (context) => LoginScreen(),
         RegisterScreen.id: (context) => RegisterScreen(),
         ForgotPasswordScreen.id: (context) => ForgotPasswordScreen(),
         DashboardScreen.id: (context) => DashboardScreen(),
-        CourseScreen.id: (context) => CourseScreen(),
         TeacherDashboardScreen.id: (context) => TeacherDashboardScreen(),
+        CourseScreen.id: (context) => CourseScreen(),
+        QuizScreen.id: (context) => QuizScreen(exam: ModalRoute.of(context)!. settings.arguments as ExamModel,),
       },
 
       initialRoute: WelcomeScreen.id,

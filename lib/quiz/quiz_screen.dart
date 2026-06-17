@@ -4,6 +4,7 @@ import 'result_screen.dart';
 import 'package:education_app/core/constants/theme.dart';
 
 class QuizScreen extends StatefulWidget {
+  static String id='quiz_screen';
   final ExamModel exam;
 
   const QuizScreen({super.key, required this.exam});

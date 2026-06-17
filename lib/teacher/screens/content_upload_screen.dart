@@ -244,7 +244,7 @@ class _ContentUploadScreenState extends State<ContentUploadScreen> {
   Future<void> _pickFile() async {
 
     try {
-      final result = await FilePicker.pickFiles(
+      final result = await FilePicker.platform.pickFiles(
 
       );
 

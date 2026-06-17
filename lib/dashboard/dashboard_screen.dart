@@ -1,21 +1,19 @@
 import 'package:education_app/quiz/quiz_model.dart';
+import 'package:education_app/theme_provider.dart';
 import 'package:flutter/material.dart';
-import '../features/login_screen.dart';
+import 'package:provider/provider.dart';
 import 'dashboard_services.dart';
-import '../profile/profile_screen.dart';
-import '../courses/course_screen.dart';
 import '../quiz/quiz_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  static String id='dashboard_screen';
-
+  static String id = 'dashboard_screen';
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final DashboardService service = DashboardService();
-
+  int selectedIndex = 0;
   int courses = 0;
   int assignments = 0;
   int messages = 0;
@@ -25,6 +23,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String name = "";
   String role = "";
+  void changePage(int index){
+    setState(() {
+      selectedIndex =index;
+    });
+  }
 
   @override
   void initState() {
@@ -53,119 +56,176 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text("Dashboard"), centerTitle: true),
+      appBar: AppBar(
+          backgroundColor: Color(0xFF9E9E9E),
+          title: Text("Dashboard"), centerTitle: true,
+        actions: [
+          Switch(value: themeProvider.isDark, onChanged: (value){
+            themeProvider.toggleTheme();
+          },
+          )
+        ],
+      ),
 
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            Text(
-              "Welcome $name 👋",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            UserAccountsDrawerHeader(
+                accountName: Text("User Name"),
+                accountEmail: Text("User@email.com"),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person,size: 40,),
             ),
-
-            Text("Role: $role", style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 30),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 15,
-                crossAxisSpacing: 15,
-                children: [
-                  _card(
-                    title: "Courses",
-                    value: courses.toString(),
-                    icon: Icons.school,onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => CourseScreen()),);
-                  }
-                  ),
-                  _card(
-                      title: "Quiz",
-                      value: quiz.toString(),
-                      icon: Icons.question_mark,onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => QuizScreen(exam: ExamModel(id: '', title: '', subject: '', questions: []),)),);
-                  }
-                  ),
-                  _card(
-                      title: "Login",
-                      value: courses.toString(),
-                      icon: Icons.start,onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) =>  LoginScreen()));
-                  }
-                  ),
-                  _card(
-                    title: "Assignments",
-                    value: assignments.toString(),
-                    icon: Icons.assignment,
-                  ),
-
-                  _card(
-                    title: "Messages",
-                    value: messages.toString(),
-                    icon: Icons.message,
-                  ),
-                  _card(title: "Profile", value: "", icon: Icons.person,
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),),);
-                      }),
-
-                ],
-              ),
+            decoration: BoxDecoration(color: Color(0xFF9E9E9E),),
             ),
+            ListTile(
+
+            )
           ],
         ),
+      ),
+      body:Row(
+        children: [
+          // ================= SIDEBAR =================
+          Container(
+            width: 260,
+            color: Color(0xFF9E9E9E),
+            child: Column(
+              children: [
+                const SizedBox(height: 50),
+
+                // 👤 Profile
+                const CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, size: 40),
+                ),
+
+                const SizedBox(height: 10),
+                const Text(
+                  "User Name",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+
+                const SizedBox(height: 30),
+
+                // 📚 Menu Items
+                sidebarItem(
+                  icon: Icons.dashboard,
+                  title: "Dashboard",
+                  index: 0,
+                ),
+
+                sidebarItem(
+                  icon: Icons.quiz,
+                  title: "Quiz",
+                  index: 1,
+                ),
+
+                sidebarItem(
+                  icon: Icons.settings,
+                  title: "Settings",
+                  index: 2,
+                ),
+
+                sidebarItem(
+                  icon: Icons.logout,
+                  title: "Logout",
+                  index: 3,
+                ),
+              ],
+            ),
+          ),
+
+          // ================= CONTENT =================
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: getPage(),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _card({
-    required String title,
-    required String value,
+  // 🔹 Sidebar item
+  Widget sidebarItem({
     required IconData icon,
-    VoidCallback? onTap,
+    required String title,
+    required int index,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 10,
-              color: Colors.black12,
+    final isSelected = selectedIndex == index;
+
+    return GestureDetector(
+      onTap: () {
+        if (index == 1) {
+          // 👉 Quiz page example
+          final exam = ExamModel(
+            id: '1',
+            title: 'Demo Exam',
+            subject: 'General',
+            questions: [
+              QuizModel(
+                id: 'q1',
+                question: 'Flutter is developed by?',
+                options: ['Apple', 'Google', 'Microsoft', 'Facebook'],
+                correctIndex: 1,
+              ),
+            ],
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => QuizScreen(exam: exam),
             ),
-          ],
+          );
+        } else {
+          changePage(index);
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white24 : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
           children: [
-            Icon(icon, size: 40, color: Colors.orange),
-            SizedBox(height: 10),
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 10),
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 5),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(color: Colors.white),
             ),
           ],
         ),
       ),
     );
   }
+
+  // 🔹 صفحات داخلی
+  Widget getPage() {
+    switch (selectedIndex) {
+      case 0:
+        return const Center(child: Text("Dashboard Home"));
+
+      case 2:
+        return const Center(child: Text("Settings Page"));
+
+      case 3:
+        return const Center(child: Text("Logout"));
+
+      default:
+        return const Center(child: Text("Page"));
+    }
+  }
 }
+
