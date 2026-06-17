@@ -1,14 +1,13 @@
 import 'package:education_app/quiz/quiz_model.dart';
 import 'package:flutter/material.dart';
 import '../features/login_screen.dart';
-import '../quiz/question_model.dart';
 import 'dashboard_services.dart';
 import '../profile/profile_screen.dart';
-import '../courses/lesson_screen.dart';
+import '../courses/course_screen.dart';
 import '../quiz/quiz_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  static String id='dashboard_screen';
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -82,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     value: courses.toString(),
                     icon: Icons.school,onTap: () {
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => const CourseScreen()),);
+                      builder: (context) => CourseScreen()),);
                   }
                   ),
                   _card(
@@ -98,7 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       value: courses.toString(),
                       icon: Icons.start,onTap: () {
                     Navigator.push(context, MaterialPageRoute(
-                        builder: (context) =>  LoginScreen(toggleTheme: () {},)),);
+                        builder: (context) =>  LoginScreen()));
                   }
                   ),
                   _card(

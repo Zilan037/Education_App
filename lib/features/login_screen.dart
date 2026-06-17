@@ -1,13 +1,17 @@
+import 'package:education_app/dashboard/dashboard_screen.dart';
+import 'package:education_app/features/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:education_app/features/auth_services.dart';
 import 'package:education_app/teacher/screens/teacher_dashboard_screen_premium.dart';
 
+import 'forgot_password.dart';
+import 'google_login.dart' as _authService;
+
 class LoginScreen extends StatefulWidget {
-  final VoidCallback toggleTheme;
+  static String id='login_screen';
 
   const LoginScreen({
     super.key,
-    required this.toggleTheme,
   });
 
   @override
@@ -72,12 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
           "Login",
           style: theme.textTheme.titleLarge,
         ),
-        actions: [
-          IconButton(
-            onPressed: widget.toggleTheme,
-            icon: const Icon(Icons.dark_mode_rounded),
-          ),
-        ],
       ),
 
       body: SafeArea(
@@ -143,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {Navigator.pushNamed(context, ForgotPasswordScreen.id);},
                     child: const Text("Forgot Password?"),
                   ),
                 ),
@@ -154,10 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed:
-                    isLoading
-                        ? null
-                        : login,
+                  onPressed: (){Navigator.pushNamed(context, DashboardScreen.id);},
                     child:
                     isLoading
                         ? const SizedBox(
@@ -202,7 +197,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 56,
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        final userCredential =
+                        await _authService.signInWithGoogle();
+                        print(userCredential.user?.email);
+                      } catch (e) {
+                        print(e);
+                      }
+                      Navigator.pushNamed(context, DashboardScreen.id);
+                    },
                     icon: const Icon(Icons.g_mobiledata),
                     label: const Text("Continue with Google"),
                     style: OutlinedButton.styleFrom(
@@ -224,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {Navigator.pushNamed(context, RegisterScreen.id);},
                       child: const Text("Register"),
                     ),
                   ],
