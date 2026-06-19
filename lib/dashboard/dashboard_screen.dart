@@ -7,8 +7,7 @@ import 'course_page.dart';
 import 'data_dashboard.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
-
+  static String id = 'dashboard_screen';
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -809,3 +808,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return icons[index];
   }
 }
+

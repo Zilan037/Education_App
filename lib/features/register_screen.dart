@@ -1,9 +1,11 @@
+
 import 'package:flutter/material.dart';
-import '../auth/bloc.dart';
-import '../core/services.dart';
+import 'package:education_app/core/widgets/app_snackbar.dart';
+import 'package:education_app/core/constants/app_strings.dart';
+import 'package:education_app/features/auth_services.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  static String id='register_screen';
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -11,162 +13,225 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
-
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
+  final confirmController = TextEditingController();
 
-  final confirmPasswordController = TextEditingController();
-
-  final AuthService authService = AuthService();
-
-  final FirebaseService firebaseService = FirebaseService();
-
+  String role = "student";
   bool isLoading = false;
+  bool obscurePass = true;
+  bool obscureConfirm = true;
 
-  String position = "Student";
-
-  // REGISTER
-
-  Future<void> register() async {
-    if (passwordController.text != confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Passwords do not match")));
-
+  void register() async {
+    if (nameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmController.text.isEmpty) {
+      AppSnackBar.show(context, AppStrings.fillFields);
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
+    if (passwordController.text != confirmController.text) {
+      AppSnackBar.show(context, "Passwords do not match");
+      return;
+    }
+
+    setState(() => isLoading = true);
 
     try {
-      final userCredential = await authService.register(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        name: nameController.text.trim(),
-        position: position,
-      );
+      final auth = AuthService();
 
-      await firebaseService.saveUser(
-        uid: userCredential.user!.uid,
-
-        name: nameController.text.trim(),
-
-        email: emailController.text.trim(),
-
-        position: position,
+      final user = await auth.register(
+        nameController.text.trim(),
+        emailController.text.trim(),
+        passwordController.text.trim(),
+        role,
       );
 
       if (!mounted) return;
 
-      Navigator.pop(context);
+      if (user != null) {
+        AppSnackBar.show(context, "Account created successfully");
+        Navigator.pop(context);
+      } else {
+        AppSnackBar.show(context, "Registration failed");
+      }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      AppSnackBar.show(context, "Error occurred");
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text("Register")),
+      appBar: AppBar(
+        title: Text(
+          "Register",
+          style: theme.textTheme.titleLarge,
+        ),
+      ),
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-
-              decoration: InputDecoration(
-                labelText: "Full Name",
-                border: OutlineInputBorder(),
+              Text(
+                "Create Account",
+                style: theme.textTheme.headlineMedium,
               ),
-            ),
 
-            SizedBox(height: 20),
+              const SizedBox(height: 10),
 
-            TextField(
-              controller: emailController,
-
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+              Text(
+                "Join your learning journey",
+                style: theme.textTheme.bodyMedium,
               ),
-            ),
 
-            SizedBox(height: 20),
+              const SizedBox(height: 40),
 
-            TextField(
-              controller: passwordController,
-
-              obscureText: true,
-
-              decoration: InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  hintText: "Full name",
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
               ),
-            ),
 
-            SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            TextField(
-              controller: confirmPasswordController,
-
-              obscureText: true,
-
-              decoration: InputDecoration(
-                labelText: "Confirm Password",
-
-                border: OutlineInputBorder(),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
               ),
-            ),
 
-            SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            DropdownButtonFormField(
-              value: position,
-              items: [
-                DropdownMenuItem(value: "Student", child: Text("Student")),
-                DropdownMenuItem(value: "Teacher", child: Text("Teacher")),
-              ],
-
-              onChanged: (value) {
-                setState(() {
-                  position = value!;
-                });
-              },
-
-              decoration: InputDecoration(
-                labelText: "Position",
-                border: OutlineInputBorder(),
+              TextField(
+                controller: passwordController,
+                obscureText: obscurePass,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePass
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        obscurePass = !obscurePass;
+                      });
+                    },
+                  ),
+                ),
               ),
-            ),
 
-            SizedBox(height: 30),
+              const SizedBox(height: 20),
 
-            SizedBox(
-              width: double.infinity,
-
-              height: 55,
-
-              child: ElevatedButton(
-                onPressed: isLoading ? null : register,
-
-                child: isLoading
-                    ? CircularProgressIndicator()
-                    : Text("Register"),
+              TextField(
+                controller: confirmController,
+                obscureText: obscureConfirm,
+                decoration: InputDecoration(
+                  hintText: "Confirm password",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscureConfirm
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        obscureConfirm = !obscureConfirm;
+                      });
+                    },
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 20),
+
+              DropdownButtonFormField<String>(
+                initialValue: role,
+                items: const [
+                  DropdownMenuItem(
+                    value: "student",
+                    child: Text("Student"),
+                  ),
+                  DropdownMenuItem(
+                    value: "teacher",
+                    child: Text("Teacher"),
+                  ),
+                  DropdownMenuItem(
+                    value: "academy",
+                    child: Text("Academy"),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => role = value);
+                  }
+                },
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.school_outlined),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: isLoading ? null : register,
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                      : const Text("Create Account"),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final auth = AuthService();
+                    final user = await auth.signInWithGoogle();
+
+                    if (user != null && mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  icon: const Icon(Icons.g_mobiledata),
+                  label: const Text("Continue with Google"),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Center(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Already have an account? Login"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
