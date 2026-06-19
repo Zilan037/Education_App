@@ -1,3 +1,4 @@
+import 'package:education_app/dashboard/dashboard_screen.dart';
 import 'package:education_app/features/register_screen.dart';
 import 'package:flutter/material.dart';
 import '../auth/bloc.dart';
@@ -108,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                   context,
 
-                  MaterialPageRoute(builder: (_) => RegisterScreen()),
+                  MaterialPageRoute(builder: (_) => DashboardScreen()),
                 );
               },
 

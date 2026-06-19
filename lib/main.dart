@@ -1,3 +1,4 @@
+import 'package:education_app/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/helpers/shared_preferences_helper.dart';
@@ -63,8 +64,8 @@ class _MyAppState extends State<MyApp> {
           ? ThemeData.dark()
           : ThemeData.light(),
 
-      home: LoginScreen(
-        toggleTheme: toggleTheme,
+      home: DashboardScreen(
+        // toggleTheme: toggleTheme,
       ),
     );
   }
