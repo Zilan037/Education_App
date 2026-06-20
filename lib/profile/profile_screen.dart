@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../auth/api_service.dart';
-import '../auth/user_models.dart';
-
-class ProfileScreen extends StatefulWidget {
+import 'edit_profile_screen.dart';
+import 'settings_screen.dart';
+import 'progress_screen.dart';
+import 'favorites_screen.dart';
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
@@ -79,6 +80,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
+
+            const SizedBox(height: 30),
+
+            _infoRow(Icons.email, "zeynab@gmail.com"),
+            const SizedBox(height: 15),
+
+
+            _infoRow(Icons.phone, "+971 000000000"),
+            const SizedBox(height: 15),
+
+
+            _infoRow(Icons.school, "University of Kabul"),
+            const SizedBox(height: 25),
+
+
+            ListTile(
+              leading: const Icon(Icons.bar_chart),
+              title: const Text("My Progress"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProgressScreen(),
+                  ),
+                );
+              },
+            ),
+
+            const Divider(),
+
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text("Favorites"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FavoritesScreen(),
+                  ),
+                );
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                );
+              },
+            ),
+
+            const Divider(),
+
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Logout"),
+                      content: const Text(
+                        "Are you sure you want to logout?",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Logout"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+
+            const Divider(),
+
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen(),
+                    ),
+                  );
+                },
+                child: const Text("Edit Profile"),
+              ),
+            ),
+          ],
+        ),
+      ),
+      ),
     );
   }
 
